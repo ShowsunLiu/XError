@@ -1,9 +1,0 @@
-// $Id$
-// vim:ft=javascript
-
-ARG_ENABLE("xerror", "custom error support", "yes");
-
-if (PHP_XERROR != "no") {
-	EXTENSION('xerror', 'xerror.c', PHP_XERROR_SHARED, "");
-}
-
