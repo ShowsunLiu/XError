@@ -1,6 +1,9 @@
 PHP Extension XError
 ======
 
+##Description
+XError is a simple php extension for rewriting the error page by yourself.
+
 ##Installation
 Like other PHP extensions ,Add extension=[.so|.dll] to your php.ini
 
