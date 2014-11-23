@@ -31,10 +31,12 @@ PHP_RSHUTDOWN_FUNCTION(xerror);
 PHP_MINFO_FUNCTION(xerror);
 
 ZEND_BEGIN_MODULE_GLOBALS(xerror)
+	zend_bool	force;
+	zend_bool	enable_cli;
 	int	error_count;
 	char *file;
 	long reporting;
-	zval	*error_info;
+	zval	*error_info; 
 ZEND_END_MODULE_GLOBALS(xerror)
 
 #ifdef ZTS
