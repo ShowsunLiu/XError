@@ -40,6 +40,8 @@ ZEND_GET_MODULE(xerror)
 PHP_INI_BEGIN()
 	STD_PHP_INI_ENTRY("xerror.file", "none", PHP_INI_ALL, OnUpdateString, file, zend_xerror_globals, xerror_globals)
 	STD_PHP_INI_ENTRY("xerror.reporting",DEFAULT_XERROR_REPORTING,	 PHP_INI_ALL, OnUpdateLong, reporting, zend_xerror_globals, xerror_globals)
+	STD_PHP_INI_BOOLEAN("xerror.force", "1", PHP_INI_ALL, OnUpdateBool, force, zend_xerror_globals, xerror_globals)
+	STD_PHP_INI_BOOLEAN("xerrror.enable_cli", "0", PHP_INI_ALL, OnUpdateBool, enable_cli, zend_xerror_globals, xerror_globals)
 PHP_INI_END()
 
 
@@ -82,18 +84,22 @@ zend_bool php_xerror_set_global(char *name, uint name_len TSRMLS_DC)
 //  New error callback
 void xerror_error_cb(int type, const char *error_filename, const uint error_lineno, const char *format, va_list args) 
 {
+	int error_flag = 0;
 	const char *default_html = "<html><title>System is busy,please try again later.</title><body style=\"background-color:#EDEDEF;text-align:center;\"><div  style=\"width:500px;margin:100px auto;margin-bottom:30px;font-size:60px;color:#444;font-weight:bold;text-align:left;\">System is busy</div><div style=\"width:500px;margin:0px auto;text-align:right;font-size:30px;\"><i> Please try again later</i></div></body></html>";
 	const char *status_line = "HTTP/1.1 503 Service Temporarily Unavailable"; 
 	sapi_header_line header_line = {0};
 	char *message;
 	TSRMLS_FETCH();
-
-	// Use default error
-	if ((type&XERROR_G(reporting)&EG(error_reporting))==0 || sapi_module.phpinfo_as_text) {
+	
+	error_flag = type&XERROR_G(reporting);
+	if (!XERROR_G(force)) {
+		error_flag &= EG(error_reporting);
+	} 
+	//Use default error handle
+	if (!error_flag || !XERROR_G(enable_cli) && strcmp(sapi_module.name, "cli")==0) {
 		old_error_cb(type, error_filename, error_lineno, format, args);
 		return;
 	}
-
 	//Set header line
 	header_line.line = status_line;
 	header_line.line_len = strlen(status_line);
@@ -166,8 +172,8 @@ PHP_RSHUTDOWN_FUNCTION(xerror)
 PHP_MINFO_FUNCTION(xerror)
 {
 	php_info_print_table_start();
-	php_info_print_table_header(2, "XError support", "enabled");
-	php_info_print_table_row(2, "author", "Showsun Liu");
+	php_info_print_table_row(2, "XError support", "enabled");
+	php_info_print_table_row(2, "XError author", "Showsun Liu");
 	php_info_print_table_end();
 
 	DISPLAY_INI_ENTRIES();
