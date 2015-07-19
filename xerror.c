@@ -41,7 +41,7 @@ PHP_INI_BEGIN()
 	STD_PHP_INI_ENTRY("xerror.file", "none", PHP_INI_ALL, OnUpdateString, file, zend_xerror_globals, xerror_globals)
 	STD_PHP_INI_ENTRY("xerror.reporting",DEFAULT_XERROR_REPORTING,	 PHP_INI_ALL, OnUpdateLong, reporting, zend_xerror_globals, xerror_globals)
 	STD_PHP_INI_BOOLEAN("xerror.force", "1", PHP_INI_ALL, OnUpdateBool, force, zend_xerror_globals, xerror_globals)
-	STD_PHP_INI_BOOLEAN("xerrror.enable_cli", "0", PHP_INI_ALL, OnUpdateBool, enable_cli, zend_xerror_globals, xerror_globals)
+	STD_PHP_INI_BOOLEAN("xerror.enable_cli", "0", PHP_INI_ALL, OnUpdateBool, enable_cli, zend_xerror_globals, xerror_globals)
 PHP_INI_END()
 
 
